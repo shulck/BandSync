@@ -17,3 +17,9 @@ Pods/
 # Environment
 .env
 GoogleService-Info.plist
+
+# Node.js
+node_modules/
+*.log
+dist/
+build/
