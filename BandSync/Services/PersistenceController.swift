@@ -1,15 +1,14 @@
+import Foundation
 import CoreData
 
-struct PersistenceController {
+class PersistenceController {
     static let shared = PersistenceController()
 
     let container: NSPersistentContainer
 
-    init(inMemory: Bool = false) {
+    init() {
         container = NSPersistentContainer(name: "BandSync")
-        if inMemory {
-            container.persistentStoreDescriptions.first?.url = URL(fileURLWithPath: "/dev/null")
-        }
+
         container.loadPersistentStores { storeDescription, error in
             if let error = error as NSError? {
                 fatalError("Unresolved error \(error), \(error.userInfo)")
@@ -19,6 +18,7 @@ struct PersistenceController {
 
     func saveContext() {
         let context = container.viewContext
+
         if context.hasChanges {
             do {
                 try context.save()

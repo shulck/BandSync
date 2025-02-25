@@ -1,0 +1,21 @@
+disabled_rules:
+  - trailing_whitespace
+  - line_length
+
+opt_in_rules:
+  - empty_count
+  - force_unwrapping
+
+included:
+  - BandSync
+
+excluded:
+  - Pods
+  - BandSync/Resources
+  - BandSync/Data/CoreData
+
+identifier_name:
+  min_length: 2
+  excluded:
+    - id
+    - db
