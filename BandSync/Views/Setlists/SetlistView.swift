@@ -1,23 +1,9 @@
-//
-//  SetlistView.swift
-//  BandSync
-//
-//  Created by Oleksandr Kuziakin on 31.03.2025.
-//
-
-
-//
-//  SetlistView.swift
-//  BandSync
-//
-//  Created by Oleksandr Kuziakin on 31.03.2025.
-//
-
 import SwiftUI
 
 struct SetlistView: View {
     @StateObject private var service = SetlistService.shared
     @State private var showAdd = false
+    @State private var showTimedAdd = false
 
     var body: some View {
         NavigationView {
@@ -27,7 +13,7 @@ struct SetlistView: View {
                         VStack(alignment: .leading) {
                             Text(setlist.name)
                                 .font(.headline)
-                            Text("Duration: \(setlist.formattedTotalDuration)")
+                            Text("Songs: \(setlist.songs.count) • Duration: \(setlist.formattedTotalDuration)")
                                 .font(.subheadline)
                                 .foregroundColor(.gray)
                         }
@@ -36,10 +22,22 @@ struct SetlistView: View {
             }
             .navigationTitle("Setlists")
             .toolbar {
-                Button {
-                    showAdd = true
-                } label: {
-                    Label("Add", systemImage: "plus")
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Menu {
+                        Button {
+                            showAdd = true
+                        } label: {
+                            Label("Add Regular Setlist", systemImage: "music.note.list")
+                        }
+                        
+                        Button {
+                            showTimedAdd = true
+                        } label: {
+                            Label("Create by Concert Time", systemImage: "timer")
+                        }
+                    } label: {
+                        Image(systemName: "plus")
+                    }
                 }
             }
             .onAppear {
@@ -49,6 +47,9 @@ struct SetlistView: View {
             }
             .sheet(isPresented: $showAdd) {
                 AddSetlistView()
+            }
+            .sheet(isPresented: $showTimedAdd) {
+                TimedSetlistView()
             }
         }
     }

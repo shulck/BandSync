@@ -2,16 +2,6 @@
 //  SetlistExportView.swift
 //  BandSync
 //
-//  Created by Oleksandr Kuziakin on 31.03.2025.
-//
-
-
-//
-//  SetlistExportView.swift
-//  BandSync
-//
-//  Created by Claude AI on 31.03.2025.
-//
 
 import SwiftUI
 import PDFKit
@@ -22,6 +12,7 @@ struct SetlistExportView: View {
     @State private var isExporting = false
     @State private var showShareSheet = false
     @State private var errorMessage: String?
+    @State private var showBPM = true
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
@@ -50,6 +41,13 @@ struct SetlistExportView: View {
             }
             
             Spacer()
+            
+            // Option for BPM
+            Toggle("Show BPM in export", isOn: $showBPM)
+                .padding()
+                .onChange(of: showBPM) { _ in
+                    generatePDF()
+                }
             
             // Action buttons
             VStack(spacing: 16) {
@@ -110,18 +108,18 @@ struct SetlistExportView: View {
         }
         .sheet(isPresented: $showShareSheet) {
             if let pdfData = pdfData {
-                ShareSheet(items: [pdfData])
+                DocumentShareSheet(items: [pdfData])
             }
         }
     }
     
-    // PDF Generation
+    // PDF Generation with BPM option
     private func generatePDF() {
         isExporting = true
         errorMessage = nil
         
         DispatchQueue.global(qos: .userInitiated).async {
-            let generatedPDF = SetlistPDFExporter.export(setlist: setlist)
+            let generatedPDF = SetlistPDFExporter.export(setlist: self.setlist, showBPM: showBPM)
             
             DispatchQueue.main.async {
                 isExporting = false
@@ -152,16 +150,4 @@ struct PDFPreviewView: UIViewRepresentable {
     func updateUIView(_ uiView: PDFView, context: Context) {
         uiView.document = document
     }
-}
-
-// Share Sheet View
-struct ShareSheet: UIViewControllerRepresentable {
-    var items: [Any]
-    
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        let controller = UIActivityViewController(activityItems: items, applicationActivities: nil)
-        return controller
-    }
-    
-    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }

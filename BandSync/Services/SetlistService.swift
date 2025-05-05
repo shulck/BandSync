@@ -56,6 +56,9 @@ final class SetlistService: ObservableObject {
             loadFromCache(groupId: groupId)
             return
         }
+        func getSetlist(by id: String) -> Setlist? {
+            return setlists.first { $0.id == id }
+        }
         
         db.collection("setlists")
             .whereField("groupId", isEqualTo: groupId)
